@@ -3,11 +3,11 @@
  * @Author: suanmei
  * @Date: 2022-03-14 17:11:56
  * @LastEditors: suanmei
- * @LastEditTime: 2022-03-14 22:13:51
+ * @LastEditTime: 2022-03-16 17:35:30
  */
 class ReactiveEffect {
   private _fn:any;
-  constructor(fn){
+  constructor(fn,public scheduler?){
     this._fn = fn;
   }
   run(){
@@ -39,14 +39,18 @@ export function trigger(target,key){
   let dep = depsMap.get(key);
 
   for(const effect of dep){
-    effect.run();
+    if(effect.scheduler){
+      effect.scheduler();
+    }else{
+      effect.run();
+    }
   }
 }
 
 let activeEffect;
-export function effect(fn){
+export function effect(fn,options:any={}){
   //fn
-  const _effect = new ReactiveEffect(fn);
+  const _effect = new ReactiveEffect(fn,options.scheduler);
   _effect.run();
 
   return _effect.run.bind(_effect);

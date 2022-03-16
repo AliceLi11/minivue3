@@ -3,7 +3,7 @@
  * @Author: suanmei
  * @Date: 2022-03-14 16:44:28
  * @LastEditors: suanmei
- * @LastEditTime: 2022-03-15 11:27:40
+ * @LastEditTime: 2022-03-16 17:18:36
  */
 import {reactive} from '../reactive'
 import {effect} from '../effect'
@@ -39,4 +39,37 @@ it('should return runner when call effect',()=>{
   const r = runner();
   expect(foo).toBe(12);
   expect(r).toBe("foo");
+})
+
+it('scheduler',()=>{
+  /*实现功能：
+    1. 通过 effect 的第二个参数给定的一个 scheduler 的 fn
+    2. effect 第一次执行的时候 还会执行 fn（effect的第一个参数）
+    3. 当响应式对象 set update的时候不会执行fn 而是执行 scheduler
+    4. 如果说当执行 runner的时候，会再次的执行fn（effect的第一个参数）
+*/
+  let dummy;
+  let run:any;
+  const scheduler = jest.fn(()=>{
+    run = runner;
+  });
+  const obj = reactive({foo:1});
+  const runner = effect(
+    ()=>{
+      dummy = obj.foo;
+    },
+    {scheduler}
+  )
+  expect(scheduler).not.toHaveBeenCalled();//scheduler这个函数一开始不会被调用
+  expect(dummy).toBe(1);
+  //should be called on first trigger
+  obj.foo++;
+  expect(scheduler).toHaveBeenCalledTimes(1);
+  // // should not run yet
+  expect(dummy).toBe(1);
+  // // manually run
+  run();
+  // //should have run
+  expect(dummy).toBe(2);
+  
 })
