@@ -3,10 +3,10 @@
  * @Author: suanmei
  * @Date: 2022-03-14 16:44:28
  * @LastEditors: suanmei
- * @LastEditTime: 2022-03-16 17:18:36
+ * @LastEditTime: 2022-03-17 11:53:23
  */
 import {reactive} from '../reactive'
-import {effect} from '../effect'
+import {effect,stop} from '../effect'
 describe('effect',()=>{
   it('happy path',()=>{
      //init
@@ -44,7 +44,7 @@ it('should return runner when call effect',()=>{
 it('scheduler',()=>{
   /*实现功能：
     1. 通过 effect 的第二个参数给定的一个 scheduler 的 fn
-    2. effect 第一次执行的时候 还会执行 fn（effect的第一个参数）
+    2. 当effect 第一次执行的时候 还会执行 fn（effect的第一个参数）
     3. 当响应式对象 set update的时候不会执行fn 而是执行 scheduler
     4. 如果说当执行 runner的时候，会再次的执行fn（effect的第一个参数）
 */
@@ -72,4 +72,25 @@ it('scheduler',()=>{
   // //should have run
   expect(dummy).toBe(2);
   
+})
+
+it("stop",()=>{
+  /**实现功能：
+   * 给stop函数传入参数（runner函数），后续更新响应式的值后，值就停止更新了。当调用runner之后，这个值就又会发生更新。
+   * （之前当我们触发set，需要去更新的时候，他会遍历收集到的所有effect(trigger函数)。如果不想让他去通知的话，只需要把相应的effect删除掉，即当调用stop的时候，把effect从deps中删除。）
+   */
+  let dummy;
+  const obj = reactive({prop:1});
+  const runner = effect(()=>{
+    dummy = obj.prop;
+  })
+  obj.prop = 2;
+  expect(dummy).toBe(2);
+  stop(runner);
+  obj.prop = 3;
+  expect(dummy).toBe(2);
+
+  //stopped effect should still be manually callable
+  runner();
+  expect(dummy).toBe(3);
 })
