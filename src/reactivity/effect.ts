@@ -3,12 +3,13 @@
  * @Author: suanmei
  * @Date: 2022-03-14 17:11:56
  * @LastEditors: suanmei
- * @LastEditTime: 2022-03-17 13:55:46
+ * @LastEditTime: 2022-03-17 14:40:11
  */
 class ReactiveEffect {
   private _fn:any;
   deps = [];
   active=true;
+  onStop?:()=>void;
   constructor(fn,public scheduler?){
     this._fn = fn;
   }
@@ -18,6 +19,9 @@ class ReactiveEffect {
   }
   stop(){
     if(this.active){
+      if(this.onStop){
+        this.onStop();
+      }
       cleanupEffect(this);
       this.active = false;
     }
@@ -66,6 +70,7 @@ let activeEffect;
 export function effect(fn,options:any={}){
   //fn
   const _effect = new ReactiveEffect(fn,options.scheduler);
+  _effect.onStop = options.onStop;
   _effect.run();
 
   const runner:any =  _effect.run.bind(_effect);

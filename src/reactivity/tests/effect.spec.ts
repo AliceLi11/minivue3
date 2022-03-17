@@ -3,7 +3,7 @@
  * @Author: suanmei
  * @Date: 2022-03-14 16:44:28
  * @LastEditors: suanmei
- * @LastEditTime: 2022-03-17 11:53:23
+ * @LastEditTime: 2022-03-17 14:38:59
  */
 import {reactive} from '../reactive'
 import {effect,stop} from '../effect'
@@ -93,4 +93,25 @@ it("stop",()=>{
   //stopped effect should still be manually callable
   runner();
   expect(dummy).toBe(3);
+})
+
+it("onStop",()=>{
+  /**
+   * 和stop相关的功能。通过第二个参数给到它(effect)，当用户去调用stop之后，传入的onStop(第二个参数)会被执行。也就是调用stop之后的回调函数，允许用户在这边去做一些额外的处理。(和之前的scheduler差不多)
+   */
+  const obj = reactive({
+    foo:1
+  });
+  const onStop = jest.fn();
+  let dummy;
+  const runner = effect(
+    ()=>{
+      dummy = obj.prop;
+    },
+    {
+      onStop
+    }
+  );
+  stop(runner);
+  expect(onStop).toBeCalledTimes(1);
 })
