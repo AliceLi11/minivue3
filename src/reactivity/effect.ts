@@ -3,8 +3,9 @@
  * @Author: suanmei
  * @Date: 2022-03-14 17:11:56
  * @LastEditors: suanmei
- * @LastEditTime: 2022-03-17 14:40:11
+ * @LastEditTime: 2022-03-17 16:12:16
  */
+import { extend } from "../shared";
 class ReactiveEffect {
   private _fn:any;
   deps = [];
@@ -49,6 +50,8 @@ export function track(target,key){
     depsMap.set(key,dep);
   }
 
+  if(!activeEffect) return;
+  
   dep.add(activeEffect);
   activeEffect.deps.push(dep);
 }
@@ -70,7 +73,10 @@ let activeEffect;
 export function effect(fn,options:any={}){
   //fn
   const _effect = new ReactiveEffect(fn,options.scheduler);
-  _effect.onStop = options.onStop;
+  // options 
+  //_effect.onStop = options.onStop;因为接下去有很多的options选项，所以这里可以用Object.assign()优化
+  //extend
+  extend(_effect,options);
   _effect.run();
 
   const runner:any =  _effect.run.bind(_effect);
