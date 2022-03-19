@@ -3,28 +3,18 @@
  * @Author: suanmei
  * @Date: 2022-03-14 17:04:04
  * @LastEditors: suanmei
- * @LastEditTime: 2022-03-15 12:49:45
+ * @LastEditTime: 2022-03-19 23:53:47
  */
-/**
- * Reflect.get方法查找并返回target对象的name属性，如果没有该属性，则返回undefined。
- * Reflect.set方法设置target对象的name属性等于value。
- */
-import {track,trigger} from './effect'
+
+import { mutableHandlers,readonlyHandlers } from "./baseHandlers";
+//return new Proxy(...)被称为低代码，可以利用函数来封装一下，来表达出它想要表达的意图，使代码变得可读性更高
+function createActiveObject(raw:any,baseHandlers){
+  return new Proxy(raw,baseHandlers)
+}
 export function reactive(raw){
-  return new Proxy(raw,{
-    get(target,key){
-      const res = Reflect.get(target,key);
+  return createActiveObject(raw,mutableHandlers)
+}
 
-      //TODO 依赖收集
-      track(target,key);
-      return res;
-    },
-    set(target,key,value){
-      const res = Reflect.set(target,key,value);
-
-      //TODO 触发依赖
-      trigger(target,key);
-      return res;
-    }
-  })
+export function readonly(raw){
+  return createActiveObject(raw,readonlyHandlers)
 }
