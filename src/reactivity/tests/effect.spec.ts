@@ -3,7 +3,7 @@
  * @Author: suanmei
  * @Date: 2022-03-14 16:44:28
  * @LastEditors: suanmei
- * @LastEditTime: 2022-03-17 14:38:59
+ * @LastEditTime: 2022-03-20 21:31:52
  */
 import {reactive} from '../reactive'
 import {effect,stop} from '../effect'
@@ -87,7 +87,11 @@ it("stop",()=>{
   obj.prop = 2;
   expect(dummy).toBe(2);
   stop(runner);
-  obj.prop = 3;
+  //obj.prop = 3; set
+  obj.prop++;//obj.prop = obj.prop+1 get set因为这里又触发了get收集了依赖，导致dummy会变为3，所以需要做下边缘case处理
+  /*解决：可以在去触发track动作的时候，加一个变量shouldTrack控制它应不应该收集依赖。思考一下shouldTrack该什么时候赋值呢？
+  *当调用set的时候又会重新执行这个fn，又重新触发了响应式对象它的get操作，所以呢这个时候它是给他收集起来的。所以应该在class ReactiveEffect里的run的时候做一下处理
+  */
   expect(dummy).toBe(2);
 
   //stopped effect should still be manually callable
