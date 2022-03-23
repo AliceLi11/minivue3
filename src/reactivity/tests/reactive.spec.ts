@@ -3,7 +3,7 @@
  * @Author: suanmei
  * @Date: 2022-03-14 17:01:13
  * @LastEditors: suanmei
- * @LastEditTime: 2022-03-20 16:17:04
+ * @LastEditTime: 2022-03-23 21:04:42
  */
 import {reactive,isReactive} from '../reactive'
 describe("reactive",()=>{
@@ -20,5 +20,23 @@ describe("reactive",()=>{
      */
     expect(isReactive(observed)).toBe(true);
     expect(isReactive(original)).toBe(false);
+    expect(isReactive(original)).toBe(false);
+  })
+
+  test("nested",()=>{
+    /**
+     * 创建好的reactive它内部还有另外的一些object场景,reactive是支持这种嵌套去转换的逻辑点的。
+     * 实现：直接在baseHandlers.ts的get方法中返回出去的res之前看看res是不是object，如果是，在这里再次调用reactive这个方法给他去转换就ok了。
+     */
+    const  original = {
+      nested:{
+        foo:1
+      },
+      array:[{bar:2}]
+    }
+    const observed = reactive(original);
+    expect(isReactive(observed.nested)).toBe(true);
+    expect(isReactive(observed.array)).toBe(true);
+    expect(isReactive(observed.array[0])).toBe(true);
   })
 })

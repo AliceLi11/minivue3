@@ -3,7 +3,7 @@
  * @Author: suanmei
  * @Date: 2022-03-19 23:24:56
  * @LastEditors: suanmei
- * @LastEditTime: 2022-03-20 16:01:17
+ * @LastEditTime: 2022-03-23 21:02:00
  */
 import {readonly,isReadonly} from '../reactive'
 describe("readonly",()=>{
@@ -19,6 +19,9 @@ describe("readonly",()=>{
 
     expect(isReadonly(wrapped)).toBe(true);
     expect(isReadonly(original)).toBe(false);
+
+    expect(isReadonly(wrapped.bar)).toBe(true);
+    expect(isReadonly(original.bar)).toBe(false);
   }),
   it("warn when call set",()=>{
     console.warn = jest.fn();
