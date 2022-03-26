@@ -3,7 +3,7 @@
  * @Author: suanmei
  * @Date: 2022-03-14 17:04:04
  * @LastEditors: suanmei
- * @LastEditTime: 2022-03-26 18:34:39
+ * @LastEditTime: 2022-03-26 18:59:31
  */
 
 import { mutableHandlers,readonlyHandlers,shallowReadonlyHandlers } from "./baseHandlers";
@@ -27,6 +27,12 @@ export function readonly(raw){
 
 export function shallowReadonly(raw){
   return createActiveObject(raw,shallowReadonlyHandlers);
+}
+
+
+/**检查对象是否是由 `reactive` 或 `readonly` 创建的 proxy */
+export function isProxy(value){
+  return isReactive(value) || isReadonly(value);
 }
 
 export function isReactive(value){
