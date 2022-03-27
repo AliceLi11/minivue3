@@ -3,7 +3,7 @@
  * @Author: suanmei
  * @Date: 2022-03-14 17:11:56
  * @LastEditors: suanmei
- * @LastEditTime: 2022-03-20 21:29:39
+ * @LastEditTime: 2022-03-27 16:24:03
  */
 import { extend } from "../shared";
 
@@ -64,12 +64,19 @@ export function track(target,key){
     depsMap.set(key,dep);
   }
 
+  trackEffect(dep);
+ 
+}
+
+export function trackEffect(dep){
+  //看看 dep 之前有没有添加过，添加过的话 那么就不添加了
   if(dep.has(activeEffect)) return;
+  
   dep.add(activeEffect);
   activeEffect.deps.push(dep);
 }
 
-function isTracking(){
+export function isTracking(){
   return shouldTrack && activeEffect!==undefined;
 }
 
@@ -77,6 +84,10 @@ export function trigger(target,key){
   let depsMap = targetMap.get(target);
   let dep = depsMap.get(key);
 
+  triggerEffects(dep);
+}
+
+export function triggerEffects(dep){
   for(const effect of dep){
     if(effect.scheduler){
       effect.scheduler();
