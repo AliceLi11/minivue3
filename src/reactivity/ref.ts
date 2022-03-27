@@ -3,7 +3,7 @@
  * @Author: suanmei
  * @Date: 2022-03-26 22:02:48
  * @LastEditors: suanmei
- * @LastEditTime: 2022-03-27 17:16:15
+ * @LastEditTime: 2022-03-27 17:49:14
  */
 import { hasChanged, isObject } from '../shared';
 import {trackEffect,isTracking,triggerEffects} from './effect'
@@ -13,6 +13,7 @@ class RefImpl{
   private _value:any;
   public dep;
   private _rawValue:any;
+  public __v_isRef=true;
   constructor(value){
     this._rawValue = value;
     this._value=convert(value);
@@ -41,3 +42,11 @@ function convert(value){
 export function ref(value){
   return new RefImpl(value);
 } 
+
+export function isRef(ref){
+  return !!ref.__v_isRef;
+}
+
+export function unRef(ref){
+  return isRef(ref)?ref.value:ref;
+}

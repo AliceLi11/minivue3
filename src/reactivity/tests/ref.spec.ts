@@ -3,7 +3,7 @@
  * @Author: suanmei
  * @Date: 2022-03-26 22:01:18
  * @LastEditors: suanmei
- * @LastEditTime: 2022-03-27 17:28:09
+ * @LastEditTime: 2022-03-27 17:50:01
  */
 /**
  * ref和reactive的区别是什么?
@@ -12,7 +12,8 @@
  * 这两点知道后，我们就能做依赖收集和触发依赖了。其实这个点也是为什么值类型需要用ref进行包裹，为什么我们内部需要.value这样的程序设计(get value(){},set value(){})。
  */
 import { effect } from '../effect';
-import {ref} from '../ref'
+import { reactive } from '../reactive';
+import {isRef, ref, unRef} from '../ref'
 describe("ref",()=>{
   it("happy path",()=>{
     /**
@@ -56,5 +57,24 @@ describe("ref",()=>{
     expect(dummy).toBe(1);
     a.value.count = 2;
     expect(dummy).toBe(2);
-  })
+  });
+
+  it("isRef",()=>{
+    /**检查值是否为一个ref对象 */
+    const a = ref(1);
+    const user = reactive({
+      age:10
+    })
+    expect(isRef(a)).toBe(true);
+    expect(isRef(1)).toBe(false);
+    expect(isRef(user)).toBe(false);
+  });
+
+  it("unRef",()=>{
+    /**val = isRef(val) ? val.value : val的语法糖函数 */
+    const a = ref(1);
+    expect(unRef(a)).toBe(1);
+    expect(unRef(1)).toBe(1);
+  });
+  
 })
