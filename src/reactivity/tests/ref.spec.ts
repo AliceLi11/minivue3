@@ -3,7 +3,7 @@
  * @Author: suanmei
  * @Date: 2022-03-26 22:01:18
  * @LastEditors: suanmei
- * @LastEditTime: 2022-03-27 17:50:01
+ * @LastEditTime: 2022-03-27 19:57:51
  */
 /**
  * ref和reactive的区别是什么?
@@ -13,7 +13,7 @@
  */
 import { effect } from '../effect';
 import { reactive } from '../reactive';
-import {isRef, ref, unRef} from '../ref'
+import {isRef, proxyRefs, ref, unRef} from '../ref'
 describe("ref",()=>{
   it("happy path",()=>{
     /**
@@ -76,5 +76,34 @@ describe("ref",()=>{
     expect(unRef(a)).toBe(1);
     expect(unRef(1)).toBe(1);
   });
+
+  it("proxyRefs",()=>{
+    /**
+     * 处理get，如果访问的是age(ref类型)，那么就给它返回.value，如果not ref，就返回本身的值。
+     * 处理set，如果这个属性是一个ref类型并且新给到的值不是ref类型，那么去修改它的.value。如果赋的是一个ref类型，直接替换掉。
+     */
+    const user = {
+      age:ref(10),
+      name:"xiaohong"
+    };
+    const proxyUser = proxyRefs(user);
+
+    //get
+    expect(user.age.value).toBe(10);
+    expect(proxyUser.age).toBe(10);
+    expect(proxyUser.name).toBe("xiaohong");
+
+    //set
+    proxyUser.age = 20;
+    proxyUser.name="zhangsan";
+    expect(proxyUser.age).toBe(20);
+    expect(user.age.value).toBe(20);
+    expect(proxyUser.name).toBe("zhangsan");
+    expect(user.name).toBe("zhangsan");
+    
+    proxyUser.age = ref(30);
+    expect(proxyUser.age).toBe(30);
+    expect(user.age.value).toBe(30);
+  })
   
 })

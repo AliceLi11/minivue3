@@ -1,0 +1,43 @@
+<!--
+ * @Descripttion: 
+ * @Author: suanmei
+ * @Date: 2022-03-27 19:40:18
+ * @LastEditors: suanmei
+ * @LastEditTime: 2022-03-27 19:57:08
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    // proxy作用：对对象进行拦截和自定义
+    var person = {
+      age:1,
+      name:"xiaohong"
+    }
+    var proxyPerson = handleProxy(person);
+    function handleProxy(obj){
+      return new Proxy(obj,{
+        get(target,key){
+          console.log(obj);//{age: 1, name: 'xiaohong'}
+          console.log(target);//{age: 1, name: 'xiaohong'}
+          return Reflect.get(target,key);
+        },
+        set(target,key,value){
+          return Reflect.set(target,key,value)
+        }
+      })
+    }
+    console.log(proxyPerson);//Proxy {age: 1, name: 'xiaohong'}
+    console.log(proxyPerson.name);//"xiaohong"
+    proxyPerson.age=10;
+    console.log(proxyPerson.age);//10
+    console.log(person.age);//10
+  </script>
+</body>
+</html>

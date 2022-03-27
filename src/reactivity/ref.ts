@@ -3,7 +3,7 @@
  * @Author: suanmei
  * @Date: 2022-03-26 22:02:48
  * @LastEditors: suanmei
- * @LastEditTime: 2022-03-27 17:49:14
+ * @LastEditTime: 2022-03-27 19:39:24
  */
 import { hasChanged, isObject } from '../shared';
 import {trackEffect,isTracking,triggerEffects} from './effect'
@@ -49,4 +49,19 @@ export function isRef(ref){
 
 export function unRef(ref){
   return isRef(ref)?ref.value:ref;
+}
+
+export function proxyRefs(objectWithRefs){
+  return new Proxy(objectWithRefs,{
+    get(target,key){   
+      return unRef(Reflect.get(target,key));
+    },
+    set(target,key,value){
+      if(isRef(target[key]) && !isRef(value)){
+        return target[key].value = value;
+      }else{
+        return Reflect.set(target,key,value);
+      }
+    }
+  })
 }
