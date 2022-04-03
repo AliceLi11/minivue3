@@ -3,13 +3,13 @@
  * @Author: suanmei
  * @Date: 2022-03-14 17:11:56
  * @LastEditors: suanmei
- * @LastEditTime: 2022-03-27 16:24:03
+ * @LastEditTime: 2022-04-02 21:36:12
  */
 import { extend } from "../shared";
 
 let activeEffect;
 let shouldTrack = false;
-class ReactiveEffect {
+export class ReactiveEffect {
   private _fn:any;
   deps = [];
   active=true;
