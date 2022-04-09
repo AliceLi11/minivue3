@@ -5,7 +5,7 @@ import { createComponentInstance, setupComponent } from "./component";
  * @Author: suanmei
  * @Date: 2022-04-08 11:30:23
  * @LastEditors: suanmei
- * @LastEditTime: 2022-04-08 17:09:18
+ * @LastEditTime: 2022-04-09 15:27:10
  */
 export function render(vnode,container){
   patch(vnode,container);
@@ -35,7 +35,8 @@ function mountComponent(vnode,container){
 }
 
 function setupRenderEffect(instance,container){
-  const subTree = instance.render();
+  const {proxy} = instance;
+  const subTree = instance.render.call(proxy);
 
   //vnode->element类型->mountElement
   patch(subTree,container);
@@ -75,3 +76,4 @@ function mountChildren(vnode,container){
     patch(v,container);
   })
 }
+

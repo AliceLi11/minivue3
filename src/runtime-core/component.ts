@@ -3,11 +3,13 @@
  * @Author: suanmei
  * @Date: 2022-04-08 11:47:26
  * @LastEditors: suanmei
- * @LastEditTime: 2022-04-08 11:48:01
+ * @LastEditTime: 2022-04-09 15:26:13
  */
 export function createComponentInstance(vnode,container){
   const component = {
-    vnode
+    vnode,
+    type:vnode.type,
+    setupState:{}
   }
   return component;
 }
@@ -20,8 +22,18 @@ export function setupComponent(instance,container){
 }
 
 function setupStatefulComponent(instance,container){
-  const Component = instance.vnode.type;
+  const Component = instance.type;
   const {setup} = Component;
+   //这个空对象一般叫ctx
+   instance.proxy = new Proxy({},{
+    get(target,key){
+      //从setupState里取值
+      const {setupState} = instance;
+      if(key in setupState){
+        return setupState[key];
+      }
+    }
+  })
   if(setup){
     const setupResult = setup();
     handleSetupResult(instance,setupResult);
@@ -41,7 +53,7 @@ function handleSetupResult(instance,setupResult){
 }
 
 function finishComponentSetup(instance){
-  const Component = instance.vnode.type;
+  const Component = instance.type;
   if(Component.render){
     instance.render = Component.render;
   }
