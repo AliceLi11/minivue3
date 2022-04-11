@@ -3,7 +3,7 @@
  * @Author: suanmei
  * @Date: 2022-04-08 11:47:26
  * @LastEditors: suanmei
- * @LastEditTime: 2022-04-09 15:26:13
+ * @LastEditTime: 2022-04-11 11:22:28
  */
 export function createComponentInstance(vnode,container){
   const component = {
@@ -31,6 +31,10 @@ function setupStatefulComponent(instance,container){
       const {setupState} = instance;
       if(key in setupState){
         return setupState[key];
+      }
+      //key -> $el
+      if(key==='$el'){
+        return instance.vnode.el;
       }
     }
   })

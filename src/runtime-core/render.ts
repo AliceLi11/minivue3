@@ -5,7 +5,7 @@ import { createComponentInstance, setupComponent } from "./component";
  * @Author: suanmei
  * @Date: 2022-04-08 11:30:23
  * @LastEditors: suanmei
- * @LastEditTime: 2022-04-09 15:27:10
+ * @LastEditTime: 2022-04-11 11:57:14
  */
 export function render(vnode,container){
   patch(vnode,container);
@@ -31,15 +31,17 @@ function mountComponent(vnode,container){
   //初始化实例上的props、slots以及初始化调用setup后返回的值，其实就是初始化用户传入的配置
   setupComponent(instance,container);
   //调用实例上的render函数，因为render函数才会最终的去返回我们想要渲染的虚拟节点，
-  setupRenderEffect(instance,container);
+  setupRenderEffect(instance,vnode,container);
 }
 
-function setupRenderEffect(instance,container){
+function setupRenderEffect(instance,vnode,container){
   const {proxy} = instance;
   const subTree = instance.render.call(proxy);
 
   //vnode->element类型->mountElement
   patch(subTree,container);
+  //patch结束之后，即所有的element这种类型都已经mount,subTree都已经初始化完成了
+  vnode.el = subTree.el;
 }
 
 
@@ -54,7 +56,8 @@ function mountElement(vnode,container){
    * document.body.append(el);
    */
   /**转换过来 const vnode = {type,props,children},children可能是string｜array */
-  const el = document.createElement(vnode.type);
+  //通过vnode.el把el存起来
+  const el = (vnode.el=document.createElement(vnode.type));
   const {children} = vnode;
   if(typeof(children)==='string'){
     el.textContent = children;
