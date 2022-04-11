@@ -5,7 +5,7 @@ import { createComponentInstance, setupComponent } from "./component";
  * @Author: suanmei
  * @Date: 2022-04-08 11:30:23
  * @LastEditors: suanmei
- * @LastEditTime: 2022-04-11 15:35:49
+ * @LastEditTime: 2022-04-11 18:00:53
  */
 import { ShapeFlags } from "../shared/ShapeFlags";
 export function render(vnode,container){
@@ -69,7 +69,14 @@ function mountElement(vnode,container){
   const {props} = vnode;
   for(const key in props){
     const val = props[key];
-    el.setAttribute(key,val);
+    //如果是on开头的，就是事件(匹配on开头，且下一位是大写的字母)
+    const isOn = (key:string)=>/^on[A-Z]/.test(key);
+    if(isOn(key)){
+      const event = key.slice(2).toLowerCase();
+      el.addEventListener(event,val);
+    }else{
+      el.setAttribute(key,val);
+    }
   }
 
   container.append(el);

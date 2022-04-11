@@ -3,7 +3,7 @@
  * @Author: suanmei
  * @Date: 2022-04-07 17:41:45
  * @LastEditors: suanmei
- * @LastEditTime: 2022-04-11 09:48:39
+ * @LastEditTime: 2022-04-11 17:59:47
  */
 /**
  * 1.template最终也会被编译成render函数，所以template就需要编译器
@@ -17,7 +17,13 @@ export const App = {
     return h('div',
     {
       id:"root",
-      class:["red","blue"]
+      class:["red","blue"],
+      onClick(){
+        console.log("click");
+      },
+      onMousedown(){
+        console.log("mousedown");
+      }
     },
     [
       h("p",{class:"red"},"hi"),
