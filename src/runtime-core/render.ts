@@ -25,23 +25,23 @@ function processComponent(vnode,container){
   mountComponent(vnode,container);
 }
 
-function mountComponent(vnode,container){
+function mountComponent(initialVNode,container){
   //根据vnode创建组件实例，挂载很多自身的属性，比如props、slots等
-  const instance = createComponentInstance(vnode,container);
+  const instance = createComponentInstance(initialVNode,container);
   //初始化实例上的props、slots以及初始化调用setup后返回的值，其实就是初始化用户传入的配置
   setupComponent(instance,container);
   //调用实例上的render函数，因为render函数才会最终的去返回我们想要渲染的虚拟节点，
-  setupRenderEffect(instance,vnode,container);
+  setupRenderEffect(instance,initialVNode,container);
 }
 
-function setupRenderEffect(instance,vnode,container){
+function setupRenderEffect(instance,initialVNode,container){
   const {proxy} = instance;
   const subTree = instance.render.call(proxy);
 
   //vnode->element类型->mountElement
   patch(subTree,container);
   //patch结束之后，即所有的element这种类型都已经mount,subTree都已经初始化完成了
-  vnode.el = subTree.el;
+  initialVNode.el = subTree.el;
 }
 
 
