@@ -3,8 +3,10 @@
  * @Author: suanmei
  * @Date: 2022-04-08 11:47:26
  * @LastEditors: suanmei
- * @LastEditTime: 2022-04-11 14:35:01
+ * @LastEditTime: 2022-04-12 10:18:57
  */
+import { shallowReadonly } from "../reactivity/reactive";
+import { initProps } from "./componentProps";
 import { PublicInstanceProxyHandlers } from "./componentPublicInstance";
 export function createComponentInstance(vnode,container){
   const component = {
@@ -16,7 +18,7 @@ export function createComponentInstance(vnode,container){
 }
 
 export function setupComponent(instance,container){
-  //TODO initProps
+  initProps(instance,instance.vnode.props);
   //TODO initSlots
 
   setupStatefulComponent(instance,container);
@@ -28,7 +30,7 @@ function setupStatefulComponent(instance,container){
    //这个空对象一般叫ctx
    instance.proxy = new Proxy({_:instance},PublicInstanceProxyHandlers)
   if(setup){
-    const setupResult = setup();
+    const setupResult = setup(shallowReadonly(instance.props));
     handleSetupResult(instance,setupResult);
   }
 }

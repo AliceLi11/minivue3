@@ -3,7 +3,7 @@
  * @Author: suanmei
  * @Date: 2022-03-17 15:35:39
  * @LastEditors: suanmei
- * @LastEditTime: 2022-03-27 16:44:38
+ * @LastEditTime: 2022-04-12 09:49:57
  */
 
 //命名extend，可读性
@@ -18,3 +18,6 @@ export const isObject = (val) =>{
 export const hasChanged = (val,newVal)=>{
   return !Object.is(val,newVal);
 }
+
+//判断val对象里面是否含有key自有属性
+export const hasOwn = (val,key) => Object.prototype.hasOwnProperty.call(val,key);
