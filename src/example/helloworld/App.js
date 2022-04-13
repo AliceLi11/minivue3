@@ -3,7 +3,7 @@
  * @Author: suanmei
  * @Date: 2022-04-07 17:41:45
  * @LastEditors: suanmei
- * @LastEditTime: 2022-04-12 10:21:19
+ * @LastEditTime: 2022-04-13 14:31:41
  */
 /**
  * 1.template最终也会被编译成render函数，所以template就需要编译器
@@ -20,16 +20,26 @@ export const App = {
     {
       id:"root",
       class:["red","blue"],
+      /*完成注册事件功能（暂时隐藏）
       onClick(){
         console.log("click");
       },
       onMousedown(){
         console.log("mousedown");
       }
+      */
     },
     [
       h('div',{},'hi,'+this.msg),
-      h(Foo,{count:1})
+      h(Foo,{
+        count:1,
+        onAdd(a,b){
+          console.log("onAdd",a,b);
+        },
+        onAddFoo(){
+          console.log("onAddFoo");
+        }
+      })
     ]
    /* [
       h("p",{class:"red"},"hi"),

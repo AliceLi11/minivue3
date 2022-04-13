@@ -7,7 +7,7 @@
   "scripts": {
     "test": "jest",
     "commit": "cz",
-    "build":"rollup -c rollup.config.js"
+    "build": "rollup -c rollup.config.js"
   },
   "keywords": [],
   "author": "",
@@ -24,7 +24,8 @@
     "commitizen": "^4.2.4",
     "cz-conventional-changelog": "^3.3.0",
     "jest": "^27.5.1",
-    "rollup": "^2.70.1"
+    "rollup": "^2.70.1",
+    "tslib": "^2.3.1"
   },
   "config": {
     "commitizen": {
