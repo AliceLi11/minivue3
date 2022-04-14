@@ -5,7 +5,7 @@ import { createComponentInstance, setupComponent } from "./component";
  * @Author: suanmei
  * @Date: 2022-04-08 11:30:23
  * @LastEditors: suanmei
- * @LastEditTime: 2022-04-12 09:30:48
+ * @LastEditTime: 2022-04-14 22:36:14
  */
 import { ShapeFlags } from "../shared/ShapeFlags";
 export function render(vnode,container){
@@ -14,10 +14,10 @@ export function render(vnode,container){
 
 function patch(vnode,container){
   //判断是vnode是component类型还是element类型
-  const {shapeFlags} = vnode;
-  if(shapeFlags & ShapeFlags.ELEMENT){
+  const {shapeFlag} = vnode;
+  if(shapeFlag & ShapeFlags.ELEMENT){
     processElement(vnode,container);
-  }else if(shapeFlags & ShapeFlags.STATEFUL_COMPONENT){
+  }else if(shapeFlag & ShapeFlags.STATEFUL_COMPONENT){
     processComponent(vnode,container);
   }
 }
@@ -59,10 +59,10 @@ function mountElement(vnode,container){
   /**转换过来 const vnode = {type,props,children},children可能是string｜array */
   //通过vnode.el把el存起来
   const el = (vnode.el=document.createElement(vnode.type));
-  const {children,shapeFlags} = vnode;
-  if(shapeFlags & ShapeFlags.TEXT_CHILDREN){
+  const {children,shapeFlag} = vnode;
+  if(shapeFlag & ShapeFlags.TEXT_CHILDREN){
     el.textContent = children;
-  }else if(shapeFlags & ShapeFlags.ARRAY_CHILDREN){
+  }else if(shapeFlag & ShapeFlags.ARRAY_CHILDREN){
     mountChildren(vnode,el);
   }
 
