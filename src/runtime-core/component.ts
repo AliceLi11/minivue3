@@ -3,19 +3,22 @@
  * @Author: suanmei
  * @Date: 2022-04-08 11:47:26
  * @LastEditors: suanmei
- * @LastEditTime: 2022-04-17 12:52:32
+ * @LastEditTime: 2022-04-17 22:58:12
  */
 import { shallowReadonly } from "../reactivity/reactive";
 import { emit } from "./componentEmit";
 import { initProps } from "./componentProps";
 import { PublicInstanceProxyHandlers } from "./componentPublicInstance";
 import { initSlots } from "./componentSlots";
-export function createComponentInstance(vnode,container){
+export function createComponentInstance(vnode,parent){
+  console.log("createComponentInstance",parent);//为了安全起见，这里打印一下
   const component = {
     vnode,
     type:vnode.type,
     setupState:{},
     slots:{},
+    provides:parent?parent.provides:{},
+    parent,
     emit:()=>{}
   }
   component.emit = emit.bind(null,component) as any;

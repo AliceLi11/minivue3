@@ -4,12 +4,11 @@
  * @Author: suanmei
  * @Date: 2022-04-12 14:23:02
  * @LastEditors: suanmei
- * @LastEditTime: 2022-04-13 14:58:40
+ * @LastEditTime: 2022-04-17 21:55:01
  */
 import { camelize, toHandlerKey } from "../shared/index";
 
 export function emit(instance,event,...args){
-  debugger;
   console.log("emit",event)
 
   const {props} = instance;

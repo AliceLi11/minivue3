@@ -5,41 +5,41 @@ import { createComponentInstance, setupComponent } from "./component";
  * @Author: suanmei
  * @Date: 2022-04-08 11:30:23
  * @LastEditors: suanmei
- * @LastEditTime: 2022-04-17 12:19:36
+ * @LastEditTime: 2022-04-17 22:36:37
  */
 import { ShapeFlags } from "../shared/ShapeFlags";
 import { Fragment,Text } from "./vnode";
 
 export function render(vnode,container){
-  patch(vnode,container);
+  patch(vnode,container,null);
 }
 
-function patch(vnode,container){
+function patch(vnode,container,parentComponent){
   //判断是vnode是component类型还是element类型
   const {type,shapeFlag} = vnode;
   switch(type){
     case Fragment:
-      processFragment(vnode,container);
+      processFragment(vnode,container,parentComponent);
       break;
     case Text:
       processText(vnode,container);
       break;
     default:
       if(shapeFlag & ShapeFlags.ELEMENT){
-        processElement(vnode,container);
+        processElement(vnode,container,parentComponent);
       }else if(shapeFlag & ShapeFlags.STATEFUL_COMPONENT){
-        processComponent(vnode,container);
+        processComponent(vnode,container,parentComponent);
       }
     }
   }
 
-function processComponent(vnode,container){
-  mountComponent(vnode,container);
+function processComponent(vnode,container,parentComponent){
+  mountComponent(vnode,container,parentComponent);
 }
 
-function mountComponent(initialVNode,container){
+function mountComponent(initialVNode,container,parentComponent){
   //根据vnode创建组件实例，挂载很多自身的属性，比如props、slots等
-  const instance = createComponentInstance(initialVNode,container);
+  const instance = createComponentInstance(initialVNode,parentComponent);
   //初始化实例上的props、slots以及初始化调用setup后返回的值，其实就是初始化用户传入的配置
   setupComponent(instance,container);
   //调用实例上的render函数，因为render函数才会最终的去返回我们想要渲染的虚拟节点，
@@ -51,16 +51,16 @@ function setupRenderEffect(instance,initialVNode,container){
   const subTree = instance.render.call(proxy);
 
   //vnode->element类型->mountElement
-  patch(subTree,container);
+  patch(subTree,container,instance);
   //patch结束之后，即所有的element这种类型都已经mount,subTree都已经初始化完成了
   initialVNode.el = subTree.el;
 }
 
 
-function processElement(vnode,container){
-  mountElement(vnode,container);
+function processElement(vnode,container,parentComponent){
+  mountElement(vnode,container,parentComponent);
 }
-function mountElement(vnode,container){
+function mountElement(vnode,container,parentComponent){
   /**正常添加一个dom元素
    * const el = document.createElement('div');
    * el.textContent = 'hi,mini-vue';
@@ -74,7 +74,7 @@ function mountElement(vnode,container){
   if(shapeFlag & ShapeFlags.TEXT_CHILDREN){
     el.textContent = children;
   }else if(shapeFlag & ShapeFlags.ARRAY_CHILDREN){
-    mountChildren(vnode,el);
+    mountChildren(vnode,el,parentComponent);
   }
 
   const {props} = vnode;
@@ -93,16 +93,16 @@ function mountElement(vnode,container){
   container.append(el);
 }
 
-function mountChildren(vnode,container){
+function mountChildren(vnode,container,parentComponent){
   vnode.children.forEach(v=>{
-    patch(v,container);
+    patch(v,container,parentComponent);
   })
 }
 
 
-function processFragment(vnode,container){
+function processFragment(vnode,container,parentComponent){
   //把所有的children渲染出来
-  mountChildren(vnode,container);
+  mountChildren(vnode,container,parentComponent);
 }
 
 function processText(vnode,container){
