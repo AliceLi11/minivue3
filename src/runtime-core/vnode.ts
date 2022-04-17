@@ -3,9 +3,14 @@
  * @Author: suanmei
  * @Date: 2022-04-08 11:28:19
  * @LastEditors: suanmei
- * @LastEditTime: 2022-04-14 22:53:49
+ * @LastEditTime: 2022-04-17 12:08:52
  */
 import { ShapeFlags } from "../shared/ShapeFlags";
+
+//Symbol保证每个属性的名字都是独一无二的，这样就从根本上防止属性名的冲突
+export const Fragment = Symbol("Fragment")
+export const Text = Symbol("Text")
+
 export function createVNode(type,props?,children?){
   const vnode = {
     type,
@@ -31,4 +36,8 @@ export function createVNode(type,props?,children?){
 
 function getShapeFlags(type){
   return typeof type === 'string' ? ShapeFlags.ELEMENT :ShapeFlags.STATEFUL_COMPONENT;
+}
+
+export function createTextVNode(text:string){
+  return createVNode(Text,{},text)
 }

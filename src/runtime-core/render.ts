@@ -5,22 +5,33 @@ import { createComponentInstance, setupComponent } from "./component";
  * @Author: suanmei
  * @Date: 2022-04-08 11:30:23
  * @LastEditors: suanmei
- * @LastEditTime: 2022-04-14 22:36:14
+ * @LastEditTime: 2022-04-17 12:19:36
  */
 import { ShapeFlags } from "../shared/ShapeFlags";
+import { Fragment,Text } from "./vnode";
+
 export function render(vnode,container){
   patch(vnode,container);
 }
 
 function patch(vnode,container){
   //判断是vnode是component类型还是element类型
-  const {shapeFlag} = vnode;
-  if(shapeFlag & ShapeFlags.ELEMENT){
-    processElement(vnode,container);
-  }else if(shapeFlag & ShapeFlags.STATEFUL_COMPONENT){
-    processComponent(vnode,container);
+  const {type,shapeFlag} = vnode;
+  switch(type){
+    case Fragment:
+      processFragment(vnode,container);
+      break;
+    case Text:
+      processText(vnode,container);
+      break;
+    default:
+      if(shapeFlag & ShapeFlags.ELEMENT){
+        processElement(vnode,container);
+      }else if(shapeFlag & ShapeFlags.STATEFUL_COMPONENT){
+        processComponent(vnode,container);
+      }
+    }
   }
-}
 
 function processComponent(vnode,container){
   mountComponent(vnode,container);
@@ -88,3 +99,14 @@ function mountChildren(vnode,container){
   })
 }
 
+
+function processFragment(vnode,container){
+  //把所有的children渲染出来
+  mountChildren(vnode,container);
+}
+
+function processText(vnode,container){
+  const {children} = vnode;
+  const textNode = (vnode.el = document.createTextNode(children));
+  container.append(textNode);
+}

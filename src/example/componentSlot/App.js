@@ -3,9 +3,9 @@
  * @Author: suanmei
  * @Date: 2022-04-14 14:48:01
  * @LastEditors: suanmei
- * @LastEditTime: 2022-04-14 17:54:22
+ * @LastEditTime: 2022-04-17 12:11:34
  */
-import {h} from '../../../lib/guide-mini-vue.esm.js';
+import {h,createTextVNode} from '../../../lib/guide-mini-vue.esm.js';
 import {Foo} from './Foo.js'
 export const App = {
   name:"App",
@@ -22,7 +22,7 @@ export const App = {
     // })
     //需要处理成作用域插槽，就需要把一个个value处理成函数，并接受参数，在子组件中直接拿到value的时候调用函数并传入相应的参数(可选)，即实现了把Foo组件内部的变量传出去的效果
     const foo = h(Foo,{},{
-      "header":({age})=>h('p',{},"header"+age),
+      "header":({age})=>[h('p',{},"header"+age),createTextVNode("你好呀～～")],
       "footer":()=>h('p',{},'footer')
     })
     return h('div',{},[app,foo]);
