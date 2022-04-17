@@ -3,7 +3,7 @@
  * @Author: suanmei
  * @Date: 2022-04-08 11:47:26
  * @LastEditors: suanmei
- * @LastEditTime: 2022-04-14 22:20:31
+ * @LastEditTime: 2022-04-17 12:52:32
  */
 import { shallowReadonly } from "../reactivity/reactive";
 import { emit } from "./componentEmit";
@@ -35,7 +35,9 @@ function setupStatefulComponent(instance,container){
    //这个空对象一般叫ctx
    instance.proxy = new Proxy({_:instance},PublicInstanceProxyHandlers)
   if(setup){
+    setCurrentInstance(instance)
     const setupResult = setup(shallowReadonly(instance.props),{emit:instance.emit});
+    setCurrentInstance(null)
     handleSetupResult(instance,setupResult);
   }
 }
@@ -57,4 +59,13 @@ function finishComponentSetup(instance){
   if(Component.render){
     instance.render = Component.render;
   }
+}
+
+let currentInstance;
+export function getCurrentInstance(){
+  return currentInstance;
+}
+
+export function setCurrentInstance(instance){
+  currentInstance = instance;
 }
