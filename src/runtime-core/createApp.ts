@@ -7,7 +7,7 @@
  * @LastEditTime: 2022-04-08 15:42:05
  */
 import { createVNode } from "./vnode";
-import { render } from "./render";
+import { render } from "./renderer";
 
 
 export function createApp(rootComponent){
