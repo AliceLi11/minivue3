@@ -3,7 +3,7 @@
  * @Author: suanmei
  * @Date: 2022-04-20 10:34:31
  * @LastEditors: suanmei
- * @LastEditTime: 2022-04-20 11:29:57
+ * @LastEditTime: 2022-04-20 14:18:19
  */
 
 import { createRenderer } from "../runtime-core/index";
@@ -37,8 +37,6 @@ const renderer:any = createRenderer({
 })
 
 export function createApp(...args){
-  debugger
-  
   return renderer.createApp(...args);
 }
 
