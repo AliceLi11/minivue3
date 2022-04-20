@@ -5,7 +5,7 @@ import { createComponentInstance, setupComponent } from "./component";
  * @Author: suanmei
  * @Date: 2022-04-08 11:30:23
  * @LastEditors: suanmei
- * @LastEditTime: 2022-04-20 10:51:49
+ * @LastEditTime: 2022-04-20 14:30:37
  */
 import { ShapeFlags } from "../shared/ShapeFlags";
 import { Fragment,Text } from "./vnode";
@@ -13,9 +13,9 @@ import { createAppAPI } from "./createApp";
 
 export function createRenderer(options){
   const {
-    createElement,
-    patchProp,
-    insert
+    createElement:hostCreateElement,
+    patchProp:hostPatchProp,
+    insert:hostInsert
   } = options;
 
   function render(vnode,container){
@@ -77,7 +77,7 @@ export function createRenderer(options){
      */
     /**转换过来 const vnode = {type,props,children},children可能是string｜array */
     //通过vnode.el把el存起来
-    const el = (vnode.el=createElement(vnode.type));
+    const el = (vnode.el=hostCreateElement(vnode.type));
     const {children,shapeFlag} = vnode;
     if(shapeFlag & ShapeFlags.TEXT_CHILDREN){
       el.textContent = children;
@@ -88,10 +88,10 @@ export function createRenderer(options){
     const {props} = vnode;
     for(const key in props){
       const val = props[key];
-      patchProp(el,key,val);
+      hostPatchProp(el,key,val);
     }
 
-    insert(el,container);
+    hostInsert(el,container);
   }
 
   function mountChildren(vnode,container,parentComponent){
